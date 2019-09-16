@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image/image.dart' as image;
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_saver/image_picker_saver.dart' as prefix0;
+import 'package:image_test/aspect_ratio.dart';
 import 'package:image_test/aspect_ratio_item.dart';
 import 'package:image_test/flat_button.dart';
 import 'package:oktoast/oktoast.dart';
@@ -75,7 +76,7 @@ class _HeaderEditorState extends State<HeaderEditor> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
-
+                  _showBottom(context);
                 },
               ),
               FlatButtonWithIcon(
@@ -86,7 +87,7 @@ class _HeaderEditorState extends State<HeaderEditor> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
-                  
+                  editorKey.currentState.flip();
                 },
               ),
               FlatButtonWithIcon(
@@ -97,7 +98,7 @@ class _HeaderEditorState extends State<HeaderEditor> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
-                  
+                  editorKey.currentState.rotate(right: false);
                 },
               ),
               FlatButtonWithIcon(
@@ -108,7 +109,7 @@ class _HeaderEditorState extends State<HeaderEditor> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
-                  
+                  editorKey.currentState.rotate(right: true);
                 },
               ),
               FlatButtonWithIcon(
@@ -119,13 +120,45 @@ class _HeaderEditorState extends State<HeaderEditor> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
-                  // editorKey.currentState.reset();
+                  editorKey.currentState.reset();
                 },
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  _showBottom(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 60.0,
+          color: Colors.lightBlue,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (_, index) {
+              var item = _aspectRatios[index];
+              return GestureDetector(
+                child: AspectRatioWidget(
+                  aspectRatio: item.aspectRatio,
+                  aspectRatioS: item.aspectRatioS,
+                  isSelected: item == _aspectRatio,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                   _aspectRatio = item; 
+                  });
+                },
+              );
+            },
+            itemCount: _aspectRatios.length,
+          ),
+        );
+      }
     );
   }
 
