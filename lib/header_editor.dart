@@ -68,6 +68,8 @@ class _HeaderEditorState extends State<HeaderEditor> {
                     _fileImage,
                     fit: BoxFit.contain,
                     mode: ExtendedImageMode.editor,
+                    enableLoadState: true,
+                    extendedImageEditorKey: editorKey,
                     initEditorConfigHandler: (state) {
                       return EditorConfig(
                           maxScale: 8.0,
@@ -80,6 +82,7 @@ class _HeaderEditorState extends State<HeaderEditor> {
                     'https://photo.tuchong.com/4870004/f/298584322.jpg',
                     fit: BoxFit.contain,
                     mode: ExtendedImageMode.editor,
+                    extendedImageEditorKey: editorKey,
                     initEditorConfigHandler: (state) {
                       return EditorConfig(
                           maxScale: 8.0,
@@ -119,9 +122,6 @@ class _HeaderEditorState extends State<HeaderEditor> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
-                  print('+++++++++++++++++++++++++++');
-                  print(editorKey);
-                  print(editorKey.currentState);
                   editorKey.currentState.flip();
                 },
               ),
