@@ -19,23 +19,27 @@ class HeaderEditor extends StatefulWidget {
 }
 
 class _HeaderEditorState extends State<HeaderEditor> {
-
-  final GlobalKey<ExtendedImageEditorState> editorKey = 
-    GlobalKey<ExtendedImageEditorState>();
+  final GlobalKey<ExtendedImageEditorState> editorKey =
+      GlobalKey<ExtendedImageEditorState>();
 
   List<AspectRatioItem> _aspectRatios = List<AspectRatioItem>()
     ..add(AspectRatioItem(aspectRatioS: "custom", aspectRatio: null))
     ..add(AspectRatioItem(aspectRatioS: "original", aspectRatio: -1.0))
-    ..add(AspectRatioItem(aspectRatioS: "1*1", aspectRatio: CropAspectRatios.ratio1_1))
-    ..add(AspectRatioItem(aspectRatioS: "4*3", aspectRatio: CropAspectRatios.ratio4_3))
-    ..add(AspectRatioItem(aspectRatioS: "3*4", aspectRatio: CropAspectRatios.ratio3_4))
-    ..add(AspectRatioItem(aspectRatioS: "16*9", aspectRatio: CropAspectRatios.ratio16_9))
-    ..add(AspectRatioItem(aspectRatioS: "9*16", aspectRatio: CropAspectRatios.ratio9_16));
+    ..add(AspectRatioItem(
+        aspectRatioS: "1*1", aspectRatio: CropAspectRatios.ratio1_1))
+    ..add(AspectRatioItem(
+        aspectRatioS: "4*3", aspectRatio: CropAspectRatios.ratio4_3))
+    ..add(AspectRatioItem(
+        aspectRatioS: "3*4", aspectRatio: CropAspectRatios.ratio3_4))
+    ..add(AspectRatioItem(
+        aspectRatioS: "16*9", aspectRatio: CropAspectRatios.ratio16_9))
+    ..add(AspectRatioItem(
+        aspectRatioS: "9*16", aspectRatio: CropAspectRatios.ratio9_16));
 
   AspectRatioItem _aspectRatio;
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     _aspectRatio = _aspectRatios.first;
   }
@@ -56,8 +60,36 @@ class _HeaderEditorState extends State<HeaderEditor> {
           ),
         ],
       ),
-      body: Center(
-        child: Text('老美了'),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: _fileImage != null
+                ? ExtendedImage.file(
+                    _fileImage,
+                    fit: BoxFit.contain,
+                    mode: ExtendedImageMode.editor,
+                    initEditorConfigHandler: (state) {
+                      return EditorConfig(
+                          maxScale: 8.0,
+                          cropRectPadding: EdgeInsets.all(20.0),
+                          hitTestSize: 20.0,
+                          cropAspectRatio: _aspectRatio.aspectRatio);
+                    },
+                  )
+                : ExtendedImage.network(
+                    'https://photo.tuchong.com/4870004/f/298584322.jpg',
+                    fit: BoxFit.contain,
+                    mode: ExtendedImageMode.editor,
+                    initEditorConfigHandler: (state) {
+                      return EditorConfig(
+                          maxScale: 8.0,
+                          cropRectPadding: EdgeInsets.all(20.0),
+                          hitTestSize: 20.0,
+                          cropAspectRatio: _aspectRatio.aspectRatio);
+                    },
+                  ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.lightBlue,
@@ -132,34 +164,33 @@ class _HeaderEditorState extends State<HeaderEditor> {
 
   _showBottom(BuildContext context) {
     return showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 60.0,
-          color: Colors.lightBlue,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (_, index) {
-              var item = _aspectRatios[index];
-              return GestureDetector(
-                child: AspectRatioWidget(
-                  aspectRatio: item.aspectRatio,
-                  aspectRatioS: item.aspectRatioS,
-                  isSelected: item == _aspectRatio,
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  setState(() {
-                   _aspectRatio = item; 
-                  });
-                },
-              );
-            },
-            itemCount: _aspectRatios.length,
-          ),
-        );
-      }
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 60.0,
+            color: Colors.lightBlue,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (_, index) {
+                var item = _aspectRatios[index];
+                return GestureDetector(
+                  child: AspectRatioWidget(
+                    aspectRatio: item.aspectRatio,
+                    aspectRatioS: item.aspectRatioS,
+                    isSelected: item == _aspectRatio,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      _aspectRatio = item;
+                    });
+                  },
+                );
+              },
+              itemCount: _aspectRatios.length,
+            ),
+          );
+        });
   }
 
   void _save() async {
@@ -180,10 +211,15 @@ class _HeaderEditorState extends State<HeaderEditor> {
         }
       }
 
-      var cropData = image.copyCrop(src, cropRect.left.toInt(), cropRect.top.toInt(), 
-        cropRect.width.toInt(), cropRect.height.toInt());
+      var cropData = image.copyCrop(
+          src,
+          cropRect.left.toInt(),
+          cropRect.top.toInt(),
+          cropRect.width.toInt(),
+          cropRect.height.toInt());
 
-      var filePath = await prefix0.ImagePickerSaver.saveFile(fileData: image.encodePng(cropData));
+      var filePath = await prefix0.ImagePickerSaver.saveFile(
+          fileData: image.encodePng(cropData));
       showToast('save iamge: $filePath');
     } catch (e) {
       showToast('save failed: $e');
@@ -195,7 +231,7 @@ class _HeaderEditorState extends State<HeaderEditor> {
   void _getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
-     _fileImage = image; 
+      _fileImage = image;
     });
   }
 }
