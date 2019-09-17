@@ -5,8 +5,8 @@ import 'dart:ui' as ui;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as image;
-import 'package:image_picker/image_picker.dart';
-import 'package:image_picker_saver/image_picker_saver.dart' as prefix0;
+import 'package:image_picker/image_picker.dart' as picker;
+import 'package:image_picker_saver/image_picker_saver.dart';
 import 'package:image_test/aspect_ratio.dart';
 import 'package:image_test/aspect_ratio_item.dart';
 import 'package:image_test/flat_button.dart';
@@ -119,6 +119,9 @@ class _HeaderEditorState extends State<HeaderEditor> {
                 ),
                 textColor: Colors.white,
                 onPressed: () {
+                  print('+++++++++++++++++++++++++++');
+                  print(editorKey);
+                  print(editorKey.currentState);
                   editorKey.currentState.flip();
                 },
               ),
@@ -218,7 +221,7 @@ class _HeaderEditorState extends State<HeaderEditor> {
           cropRect.width.toInt(),
           cropRect.height.toInt());
 
-      var filePath = await prefix0.ImagePickerSaver.saveFile(
+      var filePath = await ImagePickerSaver.saveFile(
           fileData: image.encodePng(cropData));
       showToast('save iamge: $filePath');
     } catch (e) {
@@ -229,7 +232,7 @@ class _HeaderEditorState extends State<HeaderEditor> {
   File _fileImage;
 
   void _getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await picker.ImagePicker.pickImage(source: picker.ImageSource.gallery);
     setState(() {
       _fileImage = image;
     });
