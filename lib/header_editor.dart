@@ -4,13 +4,13 @@ import 'dart:ui' as ui;
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image/image.dart' as image;
 import 'package:image_picker/image_picker.dart' as picker;
 import 'package:image_picker_saver/image_picker_saver.dart';
 import 'package:image_test/aspect_ratio.dart';
 import 'package:image_test/aspect_ratio_item.dart';
 import 'package:image_test/flat_button.dart';
-import 'package:oktoast/oktoast.dart';
 
 class HeaderEditor extends StatefulWidget {
   HeaderEditor({Key key}) : super(key: key);
@@ -221,18 +221,19 @@ class _HeaderEditorState extends State<HeaderEditor> {
           cropRect.width.toInt(),
           cropRect.height.toInt());
 
-      var filePath = await ImagePickerSaver.saveFile(
-          fileData: image.encodePng(cropData));
-      showToast('save iamge: $filePath');
+      var filePath =
+          await ImagePickerSaver.saveFile(fileData: image.encodePng(cropData));
+      Fluttertoast.showToast(msg: 'save image: $filePath');
     } catch (e) {
-      showToast('save failed: $e');
+      Fluttertoast.showToast(msg: 'save failed: $e');
     }
   }
 
   File _fileImage;
 
   void _getImage() async {
-    var image = await picker.ImagePicker.pickImage(source: picker.ImageSource.gallery);
+    var image =
+        await picker.ImagePicker.pickImage(source: picker.ImageSource.gallery);
     setState(() {
       _fileImage = image;
     });
